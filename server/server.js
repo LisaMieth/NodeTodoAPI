@@ -1,15 +1,4 @@
-// var env = process.env.NODE_ENV || 'development';
-//
-// console.log('env', env);
-//
-// if(env === 'development') {
-//   process.env.PORT = 3000;
-//   process.env.MONGODB_URI = 'mongodb://127.0.0.1:27017/TodoApp';
-// }
-// else if (env ==='test') {
-//   process.env.PORT = 3000;
-//   process.env.MONGODB_URI = 'mongodb://127.0.0.1:27017/TodoAppTest';
-// }
+require('./config/config');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -48,14 +37,17 @@ app.get('/todos', authenticate, (req,res) => {
   });
 });
 
-app.get('/todos/:id', (req, res) => {
+app.get('/todos/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
 
-  Todo.findById(id).then((todo) => {
+  Todo.findOne({
+    _id: id,
+    _creator: req.user._id
+  }).then((todo) => {
     if (!todo) {
       return res.status(404).send();
     }
@@ -65,14 +57,17 @@ app.get('/todos/:id', (req, res) => {
   });
 });
 
-app.delete('/todos/:id', (req, res) => {
+app.delete('/todos/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
 
-  Todo.findByIdAndRemove(id).then((todo) => {
+  Todo.findOneAndRemove({
+    _id: id,
+    _creator: req.user._id
+  }).then((todo) => {
     if (!todo) {
       return res.status(404).send();
     }
@@ -82,7 +77,7 @@ app.delete('/todos/:id', (req, res) => {
   });
 });
 
-app.patch('/todos/:id', (req, res) => {
+app.patch('/todos/:id', authenticate, (req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ['text', 'completed']);
 
@@ -97,7 +92,10 @@ app.patch('/todos/:id', (req, res) => {
     body.completedAt = null;
   }
 
-  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+  Todo.findOneAndUpdate({
+    _id: id,
+    _creator: req.user._id
+  }, {$set: body}, {new: true}).then((todo) => {
     if (!todo) {
       res.status(404).send();
     }
