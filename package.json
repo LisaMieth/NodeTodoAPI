@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server/server.js",
     "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/**/*.test.js",
-    "test-watch": "nodemon --exec \"npm test\""
+    "test-watch": "nodemon --exec \"npm test\"",
+    "update": "npm i -g npm-check-updates && ncu -u && npm install"
   },
   "engines": {
     "node": "6.11.1"
@@ -15,14 +16,14 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.15.2",
+    "body-parser": "^1.19.0",
     "crypto-js": "^3.1.9-1",
-    "express": "^4.15.2",
-    "jsonwebtoken": "^7.3.0",
-    "lodash": "^4.17.4",
-    "mongodb": "^2.2.5",
-    "mongoose": "^4.8.6",
-    "validator": "^7.0.0"
+    "express": "^4.17.1",
+    "jsonwebtoken": "^7.4.3",
+    "lodash": "^4.17.11",
+    "mongodb": "^2.2.36",
+    "mongoose": "^4.13.18",
+    "validator": "^7.2.0"
   },
   "devDependencies": {
     "expect": "^1.20.2",
